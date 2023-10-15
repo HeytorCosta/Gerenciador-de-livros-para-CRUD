@@ -1,0 +1,8 @@
+CREATE DATABASE teste;
+use teste;
+CREATE TABLE tb_usuario(
+cod_pessoa INT PRIMARY KEY AUTO_INCREMENT,
+nome VARCHAR(200) NOT NULL,
+senha VARCHAR(20) NOT NULL
+);
+select * from tb_usuario;

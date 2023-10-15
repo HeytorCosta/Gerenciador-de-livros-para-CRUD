@@ -5,6 +5,7 @@
 
 
 import javax.swing.*;
+import java.sql.*;
 
 
 public class TelaDeLogin extends JFrame {
@@ -61,6 +62,8 @@ public class TelaDeLogin extends JFrame {
         new TelaDeLogin();
     }
 
+
+   
     public static boolean validarCredenciais(String usuario, String senha) {
         if ("admin".equals(usuario) && "123456".equals(senha)) {
             return true;
@@ -69,3 +72,5 @@ public class TelaDeLogin extends JFrame {
         }
     }
 }
+
+
