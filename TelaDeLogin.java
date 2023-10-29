@@ -3,21 +3,19 @@
 
 //Curso: Eng. Computação
 
-
-import javax.swing.*;
 import java.sql.*;
-
+import javax.swing.*;
 
 public class TelaDeLogin extends JFrame {
 
     private JTextField textFieldUsuario;
     private JPasswordField passwordFieldSenha;
-    private JButton buttonLogin;
+    private JButton buttonLogin, buttonCadastro;
 
     public TelaDeLogin() {
         // Configurações do JFrame
         setTitle("Tela de Login");
-        setSize(300, 200);
+        setSize(300, 220);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(null);
@@ -49,28 +47,78 @@ public class TelaDeLogin extends JFrame {
             String senha = new String(passwordFieldSenha.getPassword());
 
             if (validarCredenciais(usuario, senha)) {
-                JOptionPane.showMessageDialog(null, "Login bem sucedido!");
+                
+                TelaPrincipal();
+
             } else {
-                JOptionPane.showMessageDialog(null, "Nome de usuário ou senha inválidos!");
+                
             }
         });
+
+        buttonCadastro = new JButton("Cadastro");
+        buttonCadastro.setBounds(100, 150, 100, 20);
+        add(buttonCadastro);
+
+        buttonCadastro.addActionListener(e -> {
+            TelaDeCadastro();
+        });
+        getContentPane().add(buttonCadastro);
 
         setVisible(true);
     }
 
+    public void TelaDeCadastro() {
+        setVisible(false);
+        Cadastro telaCadastro = new Cadastro();
+        telaCadastro.cadastro();
+    }
+
+    public void TelaPrincipal() {
+        setVisible(false);
+        TelaPrincipal telaPrincipal = new TelaPrincipal();
+        telaPrincipal.Inicio();
+    }
+
     public static void main(String[] args) {
         new TelaDeLogin();
+
     }
 
-
-   
     public static boolean validarCredenciais(String usuario, String senha) {
-        if ("admin".equals(usuario) && "123456".equals(senha)) {
-            return true;
-        } else {
+        
+        ConexaoBd conexaoBd = new ConexaoBd();
+        Connection conexao = conexaoBd.obterConexao();
+        try {
+            String sql = "SELECT senha FROM tb_cadastro WHERE nome = ?";
+            PreparedStatement statement = conexao.prepareStatement(sql);
+            statement.setString(1, usuario);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                String senhaDB = resultSet.getString("senha");
+
+                if (senha.equals(senhaDB)) {
+                    JOptionPane.showMessageDialog(null, "Login Bem Sucedido");
+                    return true;
+                    
+                } else {
+                    JOptionPane.showMessageDialog(null, "Senha Incorreta");
+                    return false;
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "usuario não encontrado");
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
             return false;
         }
+
+        // if ("admin".equals(usuario) && "admin".equals(senha)) {
+        // return true;
+        // } else {
+        // return false;
+        // }
     }
 }
-
-
