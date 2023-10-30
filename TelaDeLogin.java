@@ -10,7 +10,7 @@ public class TelaDeLogin extends JFrame {
 
     private JTextField textFieldUsuario;
     private JPasswordField passwordFieldSenha;
-    private JButton buttonLogin, buttonCadastro;
+    private JButton buttonLogin;
 
     public TelaDeLogin() {
         // Configurações do JFrame
@@ -19,6 +19,7 @@ public class TelaDeLogin extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(null);
+        
 
         // Cria os componentes
         JLabel labelUsuario = new JLabel("Usuário:");
@@ -54,24 +55,10 @@ public class TelaDeLogin extends JFrame {
                 
             }
         });
-
-        buttonCadastro = new JButton("Cadastro");
-        buttonCadastro.setBounds(100, 150, 100, 20);
-        add(buttonCadastro);
-
-        buttonCadastro.addActionListener(e -> {
-            TelaDeCadastro();
-        });
-        getContentPane().add(buttonCadastro);
-
         setVisible(true);
     }
 
-    public void TelaDeCadastro() {
-        setVisible(false);
-        Cadastro telaCadastro = new Cadastro();
-        telaCadastro.cadastro();
-    }
+        
 
     public void TelaPrincipal() {
         setVisible(false);
@@ -89,7 +76,7 @@ public class TelaDeLogin extends JFrame {
         ConexaoBd conexaoBd = new ConexaoBd();
         Connection conexao = conexaoBd.obterConexao();
         try {
-            String sql = "SELECT senha FROM tb_cadastro WHERE nome = ?";
+            String sql = "SELECT senha FROM tabela_cadastro WHERE nome = ?";
             PreparedStatement statement = conexao.prepareStatement(sql);
             statement.setString(1, usuario);
 
@@ -115,10 +102,5 @@ public class TelaDeLogin extends JFrame {
             return false;
         }
 
-        // if ("admin".equals(usuario) && "admin".equals(senha)) {
-        // return true;
-        // } else {
-        // return false;
-        // }
     }
 }
