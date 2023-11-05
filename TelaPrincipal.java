@@ -1,9 +1,11 @@
+import java.sql.*;
 import javax.swing.*;
 
 public class TelaPrincipal extends JFrame {
 
     private JButton buttonCadastro;
-    public void Inicio() {
+
+    public void Inicio(String usuario) {
         setVisible(true);
         setTitle("Tela Principal");
         setSize(300, 220);
@@ -11,18 +13,20 @@ public class TelaPrincipal extends JFrame {
         setLocationRelativeTo(null);
         setLayout(null);
 
-        JLabel labelUsuario = new JLabel("Teste:");
-        labelUsuario.setBounds(50, 30, 100, 20);
-        add(labelUsuario);
+        JLabel labelSenha = new JLabel(usuario);
+        labelSenha.setBounds(50, 60, 100, 20);
+        add(labelSenha);
 
-        buttonCadastro = new JButton("Cadastro");
-        buttonCadastro.setBounds(100, 150, 100, 20);
-        add(buttonCadastro);
+        if (VerificarAdministrador(usuario)) {
+            buttonCadastro = new JButton("Cadastro");
+            buttonCadastro.setBounds(100, 150, 100, 20);
+            add(buttonCadastro);
 
-        buttonCadastro.addActionListener(e -> {
-            TelaDeCadastro();
-        });
-        getContentPane().add(buttonCadastro);
+            buttonCadastro.addActionListener(e -> {
+                TelaDeCadastro();
+            });
+            getContentPane().add(buttonCadastro);
+        }
 
         setVisible(true);
     }
@@ -32,4 +36,32 @@ public class TelaPrincipal extends JFrame {
         Cadastro telaCadastro = new Cadastro();
         telaCadastro.cadastro();
     }
+
+    public static boolean VerificarAdministrador(String usuario){
+
+        ConexaoBd conexaoBd = new ConexaoBd();
+        Connection conexao = conexaoBd.obterConexao();
+        try {
+            String sql = "SELECT autoridade FROM tabela_cadastro WHERE nome = ?";
+            PreparedStatement statement = conexao.prepareStatement(sql);
+            statement.setString(1, usuario);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                String autoridadeDb = resultSet.getString("autoridade");
+                String autoridade = "Administrador";
+                if (autoridade.equals(autoridadeDb)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
+}

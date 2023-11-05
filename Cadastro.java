@@ -6,7 +6,6 @@ public class Cadastro extends JFrame {
 
     private JComboBox<String> comboBox, livroFavorito1 ,livroFavorito2;
     private JTextField textFieldNome, textFieldIdade, textFieldTelefone, textFieldEmail;
-    //textFieldLivroFavorito1, textFieldLivroFavorito
     private JPasswordField passwordFieldSenha;
     private JButton buttoncadastro;
 
@@ -101,7 +100,7 @@ public class Cadastro extends JFrame {
             String email = textFieldEmail.getText();
             String favorito1 = (String)livrofavorito1.getSelectedItem();
             String favorito2 = (String)livroFavorito2.getSelectedItem();;
-            String autoridade = "usuario";
+            String autoridade = "Usuario";
 
             cadastroBD(Nome,senha,idade,sexo,telefone,email,favorito1,favorito2,autoridade);
     });

@@ -48,8 +48,7 @@ public class TelaDeLogin extends JFrame {
             String senha = new String(passwordFieldSenha.getPassword());
 
             if (validarCredenciais(usuario, senha)) {
-                
-                TelaPrincipal();
+                TelaPrincipal(usuario);
 
             } else {
                 
@@ -60,10 +59,10 @@ public class TelaDeLogin extends JFrame {
 
         
 
-    public void TelaPrincipal() {
+    public void TelaPrincipal(String usuario) {
         setVisible(false);
         TelaPrincipal telaPrincipal = new TelaPrincipal();
-        telaPrincipal.Inicio();
+        telaPrincipal.Inicio(usuario);
     }
 
     public static void main(String[] args) {
@@ -101,6 +100,7 @@ public class TelaDeLogin extends JFrame {
             e.printStackTrace();
             return false;
         }
+        
 
     }
 }
