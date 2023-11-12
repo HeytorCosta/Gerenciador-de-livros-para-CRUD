@@ -4,7 +4,7 @@ import javax.swing.*;
 
 public class Cadastro extends JFrame {
 
-    private JComboBox<String> comboBox, livroFavorito1 ,livroFavorito2;
+    
     private JTextField textFieldNome, textFieldIdade, textFieldTelefone, textFieldEmail;
     private JPasswordField passwordFieldSenha;
     private JButton buttoncadastro;

@@ -3,7 +3,7 @@ import javax.swing.*;
 
 public class TelaPrincipal extends JFrame {
 
-    private JButton buttonCadastro;
+    private JButton buttonCadastro,buttonCadastroLivro;
 
     public void Inicio(String usuario) {
         setVisible(true);
@@ -17,9 +17,19 @@ public class TelaPrincipal extends JFrame {
         labelSenha.setBounds(50, 60, 100, 20);
         add(labelSenha);
 
+        buttonCadastroLivro = new JButton("Cadastro de livros");
+            buttonCadastroLivro.setBounds(80, 150, 140, 20);
+            add(buttonCadastroLivro);
+
+            buttonCadastroLivro.addActionListener(e -> {
+                TelaDeCadastroLivros(usuario);
+            });
+            getContentPane().add(buttonCadastroLivro);
+        
+
         if (VerificarAdministrador(usuario)) {
             buttonCadastro = new JButton("Cadastro");
-            buttonCadastro.setBounds(100, 150, 100, 20);
+            buttonCadastro.setBounds(100, 120, 100, 20);
             add(buttonCadastro);
 
             buttonCadastro.addActionListener(e -> {
@@ -31,10 +41,20 @@ public class TelaPrincipal extends JFrame {
         setVisible(true);
     }
 
+    //Chamar tela de cadastro de usuario
+
     public void TelaDeCadastro() {
         setVisible(false);
         Cadastro telaCadastro = new Cadastro();
         telaCadastro.cadastro();
+    }
+
+    //Chamar tela de cadastro de livros
+
+    public void TelaDeCadastroLivros(String usuario){
+        setVisible(false);
+        Cadastroolivros teladeCadastroolivros = new Cadastroolivros();
+        teladeCadastroolivros.cadastrolivros(usuario);
     }
 
     public static boolean VerificarAdministrador(String usuario){
@@ -51,11 +71,7 @@ public class TelaPrincipal extends JFrame {
             if (resultSet.next()) {
                 String autoridadeDb = resultSet.getString("autoridade");
                 String autoridade = "Administrador";
-                if (autoridade.equals(autoridadeDb)) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return autoridade.equals(autoridadeDb);
             } else {
                 return false;
             }
