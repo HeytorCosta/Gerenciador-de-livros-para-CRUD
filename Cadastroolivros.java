@@ -55,7 +55,7 @@ public class Cadastroolivros extends JFrame {
         
         getContentPane().add(notalivro);
 
-        buttoncadastro = new JButton("Cadastro");
+        buttoncadastro = new JButton("Cadastrar");
         buttoncadastro.setBounds(100, 190, 100, 30);
         add(buttoncadastro);
 

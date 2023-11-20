@@ -1,5 +1,8 @@
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.sql.*;
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 
 public class TelaPrincipal {
@@ -11,14 +14,13 @@ public class TelaPrincipal {
         frame.setSize(600, 440);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
-        frame.setLayout(null);
-
+        frame.getContentPane().setLayout(new BorderLayout());
 
         barradeFerramentas(usuario, frame);
         exibirlivros(frame);
 
         frame.setVisible(true);
-    
+
     }
 
     // Chamar tela de cadastro de usuario
@@ -64,9 +66,10 @@ public class TelaPrincipal {
     private void barradeFerramentas(String usuario, JFrame frame) {
         if (VerificarAdministrador(usuario)) {
 
+            JPanel toolbarPanel = new JPanel(new BorderLayout());
+
             JToolBar toolbar = new JToolBar();
             toolbar.setFloatable(true);
-            toolbar.setBounds(0, 0, 600, 20);
 
             JButton CadastrarLivro = new JButton("Cadastro Livro");
 
@@ -90,13 +93,20 @@ public class TelaPrincipal {
 
             toolbar.add(CadastroUsuario);
 
-            frame.add(toolbar);
+            toolbarPanel.add(toolbar);
+
+            toolbarPanel.add(toolbar, BorderLayout.PAGE_START);
+
+            // Adiciona o painel ao JFrame
+            frame.getContentPane().add(toolbarPanel, BorderLayout.PAGE_START);
+            frame.pack();
+            frame.setVisible(true);
 
         } else {
+            JPanel toolbarPanel = new JPanel(new BorderLayout());
 
             JToolBar toolbar = new JToolBar();
-            toolbar.setFloatable(true);
-            toolbar.setBounds(0, 0, 600, 20);
+            toolbar.setFloatable(false);
 
             JButton CadastrarLivro = new JButton("Cadastro Livro");
 
@@ -109,7 +119,13 @@ public class TelaPrincipal {
 
             toolbar.addSeparator();
 
-            frame.add(toolbar);
+            toolbarPanel.add(toolbar, BorderLayout.PAGE_START);
+
+            // Adiciona o painel ao JFrame
+            frame.getContentPane().add(toolbarPanel, BorderLayout.PAGE_START);
+            frame.pack();
+            frame.setVisible(true);
+
         }
     }
 
@@ -117,6 +133,8 @@ public class TelaPrincipal {
 
         // Criar modelo de tabela
         DefaultTableModel model = new DefaultTableModel();
+        JTable table = new JTable(model);
+
         model.addColumn("ID");
         model.addColumn("Título");
         model.addColumn("Autor");
@@ -124,36 +142,22 @@ public class TelaPrincipal {
         model.addColumn("Tipo");
         model.addColumn("Nota");
 
-        // Criar tabela com modelo
-        JTable table = new JTable(model);
-
-        JScrollPane scrollPane = new JScrollPane(table);
-
-         // Configurar layout do painel principal
-         JPanel panel = new JPanel();
-         panel.setBounds(20, 60, 400, 200);
- 
-         // Adicionar painel de rolagem ao painel principal
-         panel.add(scrollPane);
- 
-       
-
         ConexaoBd conexaoBd = new ConexaoBd();
         Connection conexao = conexaoBd.obterConexao();
 
         try {
 
-            String sql = "SELECT cod_livro, Tituto, Autor, Editora, Tipo, nota FROM tabela_livros";
-            Statement stmt = conexao.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+            String sql = "SELECT * FROM tabela_livros";
+            PreparedStatement statement = conexao.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
 
-            while (rs.next()) {
-                int id = rs.getInt("cod_livro");
-                String titulo = rs.getString("Titulo");
-                String autor = rs.getString("Autor");
-                String editora = rs.getString("Editora");
-                String tipo = rs.getString("Tipo");
-                int nota = rs.getInt("nota");
+            while (resultSet.next()) {
+                int id = resultSet.getInt("cod_livro");
+                String titulo = resultSet.getString("Titulo");
+                String autor = resultSet.getString("Autor");
+                String editora = resultSet.getString("Editora");
+                String tipo = resultSet.getString("Tipo");
+                int nota = resultSet.getInt("nota");
 
                 model.addRow(new Object[] { id, titulo, autor, editora, tipo, nota });
             }
@@ -162,8 +166,16 @@ public class TelaPrincipal {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
-        frame.revalidate();
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        // Criação do painel para agrupar barra de ferramentas e a tabela
+        JPanel painel = new JPanel(new BorderLayout());
+        painel.add(scrollPane, BorderLayout.CENTER);
+
+        // Adiciona o painel ao JFrame
+        frame.getContentPane().add(painel, BorderLayout.CENTER);
+        frame.pack();
+        frame.setVisible(true);
 
     }
 }
