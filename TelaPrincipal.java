@@ -1,63 +1,43 @@
 import java.sql.*;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
-public class TelaPrincipal extends JFrame {
-
-    private JButton buttonCadastro,buttonCadastroLivro;
+public class TelaPrincipal {
 
     public void Inicio(String usuario) {
-        setVisible(true);
-        setTitle("Tela Principal");
-        setSize(300, 220);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setLayout(null);
+        JFrame frame = new JFrame();
+        frame.setVisible(true);
+        frame.setTitle("Tela Principal");
+        frame.setSize(600, 440);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setLayout(null);
 
-        JLabel labelSenha = new JLabel(usuario);
-        labelSenha.setBounds(50, 60, 100, 20);
-        add(labelSenha);
 
-        buttonCadastroLivro = new JButton("Cadastro de livros");
-            buttonCadastroLivro.setBounds(80, 150, 140, 20);
-            add(buttonCadastroLivro);
+        barradeFerramentas(usuario, frame);
+        exibirlivros(frame);
 
-            buttonCadastroLivro.addActionListener(e -> {
-                TelaDeCadastroLivros(usuario);
-            });
-            getContentPane().add(buttonCadastroLivro);
-        
-
-        if (VerificarAdministrador(usuario)) {
-            buttonCadastro = new JButton("Cadastro");
-            buttonCadastro.setBounds(100, 120, 100, 20);
-            add(buttonCadastro);
-
-            buttonCadastro.addActionListener(e -> {
-                TelaDeCadastro();
-            });
-            getContentPane().add(buttonCadastro);
-        }
-
-        setVisible(true);
+        frame.setVisible(true);
+    
     }
 
-    //Chamar tela de cadastro de usuario
+    // Chamar tela de cadastro de usuario
 
-    public void TelaDeCadastro() {
-        setVisible(false);
+    public void TelaDeCadastro(JFrame frame) {
+        frame.setVisible(false);
         Cadastro telaCadastro = new Cadastro();
         telaCadastro.cadastro();
     }
 
-    //Chamar tela de cadastro de livros
+    // Chamar tela de cadastro de livros
 
-    public void TelaDeCadastroLivros(String usuario){
-        setVisible(false);
+    public void TelaDeCadastroLivros(String usuario, JFrame frame) {
+        frame.setVisible(false);
         Cadastroolivros teladeCadastroolivros = new Cadastroolivros();
         teladeCadastroolivros.cadastrolivros(usuario);
     }
 
-    public static boolean VerificarAdministrador(String usuario){
+    public static boolean VerificarAdministrador(String usuario) {
 
         ConexaoBd conexaoBd = new ConexaoBd();
         Connection conexao = conexaoBd.obterConexao();
@@ -79,5 +59,111 @@ public class TelaPrincipal extends JFrame {
             e.printStackTrace();
             return false;
         }
+    }
+
+    private void barradeFerramentas(String usuario, JFrame frame) {
+        if (VerificarAdministrador(usuario)) {
+
+            JToolBar toolbar = new JToolBar();
+            toolbar.setFloatable(true);
+            toolbar.setBounds(0, 0, 600, 20);
+
+            JButton CadastrarLivro = new JButton("Cadastro Livro");
+
+            CadastrarLivro.addActionListener(e -> {
+                TelaDeCadastroLivros(usuario, frame);
+            });
+
+            frame.getContentPane().add(CadastrarLivro);
+
+            toolbar.add(CadastrarLivro);
+
+            toolbar.addSeparator();
+
+            JButton CadastroUsuario = new JButton("Cadastrar usuario");
+            toolbar.add(CadastroUsuario);
+
+            CadastroUsuario.addActionListener(e -> {
+                TelaDeCadastro(frame);
+            });
+            frame.getContentPane().add(CadastroUsuario);
+
+            toolbar.add(CadastroUsuario);
+
+            frame.add(toolbar);
+
+        } else {
+
+            JToolBar toolbar = new JToolBar();
+            toolbar.setFloatable(true);
+            toolbar.setBounds(0, 0, 600, 20);
+
+            JButton CadastrarLivro = new JButton("Cadastro Livro");
+
+            CadastrarLivro.addActionListener(e -> {
+                TelaDeCadastroLivros(usuario, frame);
+            });
+            frame.getContentPane().add(CadastrarLivro);
+
+            toolbar.add(CadastrarLivro);
+
+            toolbar.addSeparator();
+
+            frame.add(toolbar);
+        }
+    }
+
+    public void exibirlivros(JFrame frame) {
+
+        // Criar modelo de tabela
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("ID");
+        model.addColumn("Título");
+        model.addColumn("Autor");
+        model.addColumn("Editora");
+        model.addColumn("Tipo");
+        model.addColumn("Nota");
+
+        // Criar tabela com modelo
+        JTable table = new JTable(model);
+
+        JScrollPane scrollPane = new JScrollPane(table);
+
+         // Configurar layout do painel principal
+         JPanel panel = new JPanel();
+         panel.setBounds(20, 60, 400, 200);
+ 
+         // Adicionar painel de rolagem ao painel principal
+         panel.add(scrollPane);
+ 
+       
+
+        ConexaoBd conexaoBd = new ConexaoBd();
+        Connection conexao = conexaoBd.obterConexao();
+
+        try {
+
+            String sql = "SELECT cod_livro, Tituto, Autor, Editora, Tipo, nota FROM tabela_livros";
+            Statement stmt = conexao.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                int id = rs.getInt("cod_livro");
+                String titulo = rs.getString("Titulo");
+                String autor = rs.getString("Autor");
+                String editora = rs.getString("Editora");
+                String tipo = rs.getString("Tipo");
+                int nota = rs.getInt("nota");
+
+                model.addRow(new Object[] { id, titulo, autor, editora, tipo, nota });
+            }
+            conexao.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        frame.revalidate();
+
     }
 }

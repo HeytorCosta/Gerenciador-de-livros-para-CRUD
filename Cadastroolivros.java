@@ -84,7 +84,7 @@ public void cadastrolivrosBD(String NomeLivro, String AutorLivro, String Editora
             System.out.println("Conexão estabelecidacom sucesso!");
             
 
-            String sql = "INSERT INTO tabela_livros (Tit, Aut, Edit,Tipo, nota) VALUES (?,?,?,?,?)";
+            String sql = "INSERT INTO tabela_livros (Titulo, Autor, Editora, Tipo, nota) VALUES (?,?,?,?,?)";
 
             PreparedStatement ps = conexao.prepareStatement(sql);
 
