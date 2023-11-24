@@ -1,8 +1,6 @@
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.sql.*;
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 
 public class TelaPrincipal {
@@ -131,35 +129,30 @@ public class TelaPrincipal {
 
     public void exibirlivros(JFrame frame) {
 
-        // Criar modelo de tabela
-        DefaultTableModel model = new DefaultTableModel();
-        JTable table = new JTable(model);
-
-        model.addColumn("ID");
-        model.addColumn("Título");
-        model.addColumn("Autor");
-        model.addColumn("Editora");
-        model.addColumn("Tipo");
-        model.addColumn("Nota");
+        JTable table = new JTable();
+        DefaultTableModel model = new DefaultTableModel(
+                new Object[][] {
+                },
+                new String[] { "Título", "Autor", "Editora", "Tipo", "Nota" });
+        table.setModel(model);
 
         ConexaoBd conexaoBd = new ConexaoBd();
         Connection conexao = conexaoBd.obterConexao();
 
         try {
 
-            String sql = "SELECT * FROM tabela_livros";
+            String sql = "SELECT * FROM tabela_livros ORDER BY nota DESC";
             PreparedStatement statement = conexao.prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                int id = resultSet.getInt("cod_livro");
                 String titulo = resultSet.getString("Titulo");
                 String autor = resultSet.getString("Autor");
                 String editora = resultSet.getString("Editora");
                 String tipo = resultSet.getString("Tipo");
                 int nota = resultSet.getInt("nota");
 
-                model.addRow(new Object[] { id, titulo, autor, editora, tipo, nota });
+                model.addRow(new Object[] { titulo, autor, editora, tipo, nota });
             }
             conexao.close();
 
@@ -167,8 +160,17 @@ public class TelaPrincipal {
             e.printStackTrace();
         }
 
+        // TableRowSorter<TableModel> sorter = new TableRowSorter<>(model);
+        // table.setRowSorter(sorter);
+
+        // // Especificando a coluna a ser ordenada (supondo que a coluna das notas seja
+        // a sexta, índice 5)
+        // sorter.setSortKeys(Arrays.asList(new RowSorter.SortKey(5,
+        // SortOrder.DESCENDING))); // Ordena por nota em ordem decrescente
+
+        // Adicionando a tabela a um JScrollPane
         JScrollPane scrollPane = new JScrollPane(table);
-        // Criação do painel para agrupar barra de ferramentas e a tabela
+
         JPanel painel = new JPanel(new BorderLayout());
         painel.add(scrollPane, BorderLayout.CENTER);
 
