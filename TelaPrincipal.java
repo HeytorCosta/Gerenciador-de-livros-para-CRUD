@@ -1,7 +1,12 @@
-import java.awt.*;
+
+import java.awt.BorderLayout;
+import java.awt.Button;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.io.Console;
 import java.sql.*;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.border.EmptyBorder;
 
 public class TelaPrincipal {
 
@@ -129,55 +134,71 @@ public class TelaPrincipal {
 
     public void exibirlivros(JFrame frame) {
 
-        JTable table = new JTable();
-        DefaultTableModel model = new DefaultTableModel(
-                new Object[][] {
-                },
-                new String[] { "Título", "Autor", "Editora", "Tipo", "Nota" });
-        table.setModel(model);
+        JPanel panel = new JPanel(new FlowLayout());
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        int margem = 10; // Ajuste conforme necessário
+        panel.setBorder(new EmptyBorder(margem, margem, margem, margem));
 
         ConexaoBd conexaoBd = new ConexaoBd();
         Connection conexao = conexaoBd.obterConexao();
 
         try {
 
-            String sql = "SELECT * FROM tabela_livros ORDER BY nota DESC";
+            String sql = "SELECT Titulo FROM Nota_livros ORDER BY SomaNotas DESC";
             PreparedStatement statement = conexao.prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
 
+            JLabel Livros = new JLabel("Livros");
+            Livros.setBounds(50, 30, 100, 50);
+            panel.add(Livros);
+
             while (resultSet.next()) {
                 String titulo = resultSet.getString("Titulo");
-                String autor = resultSet.getString("Autor");
-                String editora = resultSet.getString("Editora");
-                String tipo = resultSet.getString("Tipo");
-                int nota = resultSet.getInt("nota");
+                //int nota = resultSet.getInt("nota");
 
-                model.addRow(new Object[] { titulo, autor, editora, tipo, nota });
+                JPanel buttonPanel = new JPanel();
+                buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+                JButton button = new JButton(titulo);
+                Dimension buttonSize = new Dimension(320, 30);
+                button.setPreferredSize(buttonSize);
+
+                button.addActionListener(e -> {
+                        try {
+                            ExibirLivroDetalhado(titulo);
+                        } catch (SQLException e1) {
+                            e1.printStackTrace();
+                        }
+                });
+
+                //JLabel labelNota = new JLabel("Nota: " + nota);
+
+                buttonPanel.add(button);
+                //buttonPanel.add(labelNota);
+
+                panel.add(buttonPanel);
+                panel.add(Box.createVerticalStrut(5));
+
             }
             conexao.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        JScrollPane scrollPane = new JScrollPane(panel); 
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS); 
 
-        // TableRowSorter<TableModel> sorter = new TableRowSorter<>(model);
-        // table.setRowSorter(sorter);
+        frame.add(scrollPane);
 
-        // // Especificando a coluna a ser ordenada (supondo que a coluna das notas seja
-        // a sexta, índice 5)
-        // sorter.setSortKeys(Arrays.asList(new RowSorter.SortKey(5,
-        // SortOrder.DESCENDING))); // Ordena por nota em ordem decrescente
-
-        // Adicionando a tabela a um JScrollPane
-        JScrollPane scrollPane = new JScrollPane(table);
-
-        JPanel painel = new JPanel(new BorderLayout());
-        painel.add(scrollPane, BorderLayout.CENTER);
-
-        // Adiciona o painel ao JFrame
-        frame.getContentPane().add(painel, BorderLayout.CENTER);
-        frame.pack();
+        frame.setSize(600, 440);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
 
+    }
+
+    public void ExibirLivroDetalhado(String titulo) throws SQLException {
+        DetalhamentoLivros detalhamentoLivros = new DetalhamentoLivros();
+        detalhamentoLivros.TelaDoLivroDetalhado(titulo);
     }
 }

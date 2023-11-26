@@ -8,6 +8,11 @@ import javax.swing.*;
 
 public class TelaDeLogin extends JFrame {
 
+    public static void main(String[] args) {
+        new TelaDeLogin();
+
+    }
+
     private JTextField textFieldUsuario;
     private JPasswordField passwordFieldSenha;
     private JButton buttonLogin;
@@ -65,10 +70,7 @@ public class TelaDeLogin extends JFrame {
         telaPrincipal.Inicio(usuario);
     }
 
-    public static void main(String[] args) {
-        new TelaDeLogin();
-
-    }
+    
 
     public static boolean validarCredenciais(String usuario, String senha) {
         
