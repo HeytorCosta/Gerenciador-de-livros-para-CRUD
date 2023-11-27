@@ -1,9 +1,7 @@
 
 import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.io.Console;
 import java.sql.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -161,7 +159,7 @@ public class TelaPrincipal {
                 buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
                 JButton button = new JButton(titulo);
-                Dimension buttonSize = new Dimension(320, 30);
+                Dimension buttonSize = new Dimension(450, 30);
                 button.setPreferredSize(buttonSize);
 
                 button.addActionListener(e -> {

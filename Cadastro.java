@@ -99,7 +99,7 @@ public class Cadastro extends JFrame {
             int telefone = Integer.valueOf(textFieldTelefone.getText());
             String email = textFieldEmail.getText();
             String favorito1 = (String)livrofavorito1.getSelectedItem();
-            String favorito2 = (String)livroFavorito2.getSelectedItem();;
+            String favorito2 = (String)livroFavorito2.getSelectedItem();
             String autoridade = "Usuario";
 
             cadastroBD(Nome,senha,idade,sexo,telefone,email,favorito1,favorito2,autoridade);

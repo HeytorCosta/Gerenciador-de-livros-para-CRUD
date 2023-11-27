@@ -17,10 +17,29 @@ select * from tabela_cadastro;
 CREATE TABLE tabela_livros(
 cod_livro INT AUTO_INCREMENT,
 Titulo varchar(200) not null,
+Descrição text not null,
 Autor varchar(200) not null,
 Editora varchar(200)not null,
 Tipo varchar(200)not null,
-nota smallint(2),
 primary key (cod_livro)
 );
 select * from tabela_livros;
+create table Nota_livros(
+Titulo varchar(200) not null,
+SomaNotas int,
+Qtd_leitores int,
+primary key(Titulo)
+);
+select * from Nota_livros;
+
+DELIMITER //
+CREATE TRIGGER adicionar_livro_nota
+AFTER INSERT ON tabela_livros
+FOR EACH ROW
+BEGIN
+    INSERT INTO Nota_livros (Titulo, SomaNotas, Qtd_leitores)
+    VALUES (NEW.Titulo, 0, 0);
+END;
+//
+DELIMITER ;
+
