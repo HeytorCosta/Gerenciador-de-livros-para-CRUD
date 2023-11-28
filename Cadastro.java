@@ -1,6 +1,5 @@
-import java.sql.PreparedStatement;
+import java.sql.*;
 import java.awt.Font;
-import java.sql.Connection;
 import javax.swing.*;
 
 public class Cadastro extends JFrame {

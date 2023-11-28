@@ -1,5 +1,7 @@
 CREATE DATABASE teste;
+
 use teste;
+
 CREATE TABLE tabela_cadastro(
 cod_pessoa INT AUTO_INCREMENT,
 nome VARCHAR(200) NOT NULL,
@@ -13,7 +15,9 @@ livrosFavoritos2 varchar(20) NOT NULL,
 autoridade varchar(20) NOT NULL,
 PRIMARY KEY (cod_pessoa)
 );
-select * from tabela_cadastro;
+
+INSERT INTO tabela_cadastro (nome, senha, idade, sexo, telefone, email, livrosFavoritos1, livrosFavoritos2, autoridade) VALUES ("administrador", "administrador", 18, "Masculino", 937181710, "admin@gmail.com", "Ficção", "Tecnico", "Administrador");
+
 CREATE TABLE tabela_livros(
 cod_livro INT AUTO_INCREMENT,
 Titulo varchar(200) not null,
@@ -23,15 +27,13 @@ Editora varchar(200)not null,
 Tipo varchar(200)not null,
 primary key (cod_livro)
 );
-select * from tabela_livros;
+
 create table Nota_livros(
 Titulo varchar(200) not null,
 SomaNotas int,
 Qtd_leitores int,
-Nota_media float,
 primary key(Titulo)
 );
-select * from Nota_livros;
 
 DELIMITER //
 CREATE TRIGGER adicionar_livro_nota
@@ -43,6 +45,10 @@ BEGIN
 END;
 //
 DELIMITER ;
+
+select * from tabela_cadastro;
+select * from tabela_livros;
+select * from Nota_livros;
 
 
 
