@@ -1,10 +1,12 @@
+import java.awt.Font;
 import java.sql.*;
+
 import javax.swing.*;
 
 import javax.swing.JFrame;
 
 public class TelaAvaliarLivro extends JFrame {
-    public void telaAvaliarLivro(String titulo) {
+    public void telaAvaliarLivro(String titulo, String usuario, JFrame frame) {
         setTitle("Avalie:" + titulo);
         setSize(300, 220);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -23,6 +25,7 @@ public class TelaAvaliarLivro extends JFrame {
             if (resultSet.next()) {
                 int somanotas = resultSet.getInt("SomaNotas");
                 int qtd_leitores = resultSet.getInt("Qtd_leitores");
+
                 if (somanotas == 0) {
                     JLabel textonotamedia = new JLabel("Ninguem avaliou!");
                     textonotamedia.setBounds(100, 10, 100, 20);
@@ -38,22 +41,34 @@ public class TelaAvaliarLivro extends JFrame {
                     getContentPane().add(notalivro);
 
                     JButton avaliação = new JButton("Avalie");
-                    avaliação.setBounds(100,120,100,30);
-                    avaliação.addActionListener(e ->{
-                        String stringNotaAtribuida = (String)notalivro.getSelectedItem();
+                    avaliação.setBounds(100, 120, 100, 30);
+                    avaliação.addActionListener(e -> {
+                        String stringNotaAtribuida = (String) notalivro.getSelectedItem();
                         int NotaAtribuida = Integer.parseInt(stringNotaAtribuida);
                         inserirnota(titulo, NotaAtribuida);
-                        JOptionPane.showMessageDialog(null, "Dados inseridos com sucesso!");
-                        setVisible(false);
+                        JOptionPane.showMessageDialog(null, "Obrigado por Avaliar!");
+                        frame.setVisible(false);
+                        TelaPrincipal telaPrincipal = new TelaPrincipal();
+                        telaPrincipal.Inicio(usuario);
 
                     });
                     getContentPane().add(avaliação);
-                    
+
+                    JButton Voltar = new JButton("Voltar");
+                    Voltar.setBounds(5, 5, 70, 15);
+                    Font buttonFont = Voltar.getFont();
+                    Voltar.setFont(buttonFont.deriveFont(buttonFont.getSize() - 2f));
+                    getContentPane().add(Voltar);
+
+                    Voltar.addActionListener(e -> {
+                        setVisible(false);
+                    });
+
                 } else {
                     float notamedia = somanotas / qtd_leitores;
 
                     JLabel textonotamedia = new JLabel("Nota Do livro : " + notamedia);
-                    textonotamedia.setBounds(100, 10, 100, 20);
+                    textonotamedia.setBounds(100, 10, 130, 20);
                     add(textonotamedia);
 
                     JLabel QualNota = new JLabel("Qual é sua avaliação");
@@ -66,17 +81,29 @@ public class TelaAvaliarLivro extends JFrame {
                     getContentPane().add(notalivro);
 
                     JButton avaliação = new JButton("Avalie");
-                    avaliação.setBounds(100,120,100,30);
-                    avaliação.addActionListener(e ->{
-                        String stringNotaAtribuida = (String)notalivro.getSelectedItem();
+                    avaliação.setBounds(100, 120, 100, 30);
+                    avaliação.addActionListener(e -> {
+                        String stringNotaAtribuida = (String) notalivro.getSelectedItem();
                         int NotaAtribuida = Integer.parseInt(stringNotaAtribuida);
                         inserirnota(titulo, NotaAtribuida);
-                        JOptionPane.showMessageDialog(null, "Dados inseridos com sucesso!");
-                        setVisible(false);
+                        JOptionPane.showMessageDialog(null, "Obrigado por Avaliar!");
+                        frame.setVisible(false);
+                        TelaPrincipal telaPrincipal = new TelaPrincipal();
+                        telaPrincipal.Inicio(usuario);
 
                     });
                     getContentPane().add(avaliação);
-                    
+
+                    JButton Voltar = new JButton("Voltar");
+                    Voltar.setBounds(5, 5, 70, 15);
+                    Font buttonFont = Voltar.getFont();
+                    Voltar.setFont(buttonFont.deriveFont(buttonFont.getSize() - 2f));
+                    getContentPane().add(Voltar);
+
+                    Voltar.addActionListener(e -> {
+                        setVisible(false);
+                    });
+
                 }
 
             } else {
@@ -92,13 +119,13 @@ public class TelaAvaliarLivro extends JFrame {
         setVisible(true);
     }
 
-    public void inserirnota(String titulo, int NotaAtribuida){
+    public void inserirnota(String titulo, int NotaAtribuida) {
 
         ConexaoBd conexaoBd = new ConexaoBd();
         Connection conexao = conexaoBd.obterConexao();
 
         try {
-            String sql = "UPDATE Nota_livros SET SomaNotas = SomaNotas + ?, Qtd_leitores = Qtd_leitores + 1 WHERE Titulo = ?";
+            String sql = "UPDATE Nota_livros SET SomaNotas = SomaNotas + ?, Qtd_leitores = Qtd_leitores + 1 WHERE Titulo = ?;";
             PreparedStatement statement = conexao.prepareStatement(sql);
             statement.setInt(1, NotaAtribuida);
             statement.setString(2, titulo);
@@ -117,4 +144,4 @@ public class TelaAvaliarLivro extends JFrame {
             e.printStackTrace();
         }
     }
-    }
+}

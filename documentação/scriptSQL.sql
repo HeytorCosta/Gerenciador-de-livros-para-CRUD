@@ -28,6 +28,7 @@ create table Nota_livros(
 Titulo varchar(200) not null,
 SomaNotas int,
 Qtd_leitores int,
+Nota_media float,
 primary key(Titulo)
 );
 select * from Nota_livros;
@@ -42,4 +43,6 @@ BEGIN
 END;
 //
 DELIMITER ;
+
+
 

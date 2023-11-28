@@ -24,7 +24,6 @@ public class TelaDeLogin extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(null);
-        
 
         // Cria os componentes
         JLabel labelUsuario = new JLabel("Usuário:");
@@ -56,13 +55,11 @@ public class TelaDeLogin extends JFrame {
                 TelaPrincipal(usuario);
 
             } else {
-                
+
             }
         });
         setVisible(true);
     }
-
-        
 
     public void TelaPrincipal(String usuario) {
         setVisible(false);
@@ -70,10 +67,8 @@ public class TelaDeLogin extends JFrame {
         telaPrincipal.Inicio(usuario);
     }
 
-    
-
     public static boolean validarCredenciais(String usuario, String senha) {
-        
+
         ConexaoBd conexaoBd = new ConexaoBd();
         Connection conexao = conexaoBd.obterConexao();
         try {
@@ -89,7 +84,7 @@ public class TelaDeLogin extends JFrame {
                 if (senha.equals(senhaDB)) {
                     JOptionPane.showMessageDialog(null, "Login Bem Sucedido");
                     return true;
-                    
+
                 } else {
                     JOptionPane.showMessageDialog(null, "Senha Incorreta");
                     return false;
@@ -102,7 +97,6 @@ public class TelaDeLogin extends JFrame {
             e.printStackTrace();
             return false;
         }
-        
 
     }
 }

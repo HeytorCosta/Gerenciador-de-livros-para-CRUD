@@ -1,13 +1,10 @@
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.*;
 import java.sql.*;
 
 public class DetalhamentoLivros extends JFrame {
 
-    public void TelaDoLivroDetalhado(String titulo) {
+    public void TelaDoLivroDetalhado(String titulo, String usuario, JFrame frame) {
 
         setTitle(titulo);
         setSize(600, 440);
@@ -80,30 +77,28 @@ public class DetalhamentoLivros extends JFrame {
             e1.printStackTrace();
         }
 
-        
         JButton Avalie = new JButton("Avalie o livro");
         Avalie.setBounds(440, 365, 120, 30);
         getContentPane().add(Avalie);
 
-        Avalie.addActionListener(e ->{
-            AvaliarLivro(titulo);
+        Avalie.addActionListener(e -> {
+            AvaliarLivro(titulo, usuario, frame);
         });
 
         JButton Voltar = new JButton("Voltar");
         Voltar.setBounds(20, 365, 120, 30);
         getContentPane().add(Voltar);
 
-        Voltar.addActionListener(e ->{
+        Voltar.addActionListener(e -> {
             setVisible(false);
         });
 
         setVisible(true);
     }
-    
-    public void AvaliarLivro(String titulo){
+
+    public void AvaliarLivro(String titulo, String usuario, JFrame frame) {
         TelaAvaliarLivro telaAvaliarLivro = new TelaAvaliarLivro();
-        telaAvaliarLivro.telaAvaliarLivro(titulo);
+        telaAvaliarLivro.telaAvaliarLivro(titulo, usuario, frame);
     }
 
 }
-

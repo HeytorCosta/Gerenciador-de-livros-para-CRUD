@@ -1,15 +1,15 @@
 import java.sql.PreparedStatement;
+import java.awt.Font;
 import java.sql.Connection;
 import javax.swing.*;
 
 public class Cadastro extends JFrame {
 
-    
     private JTextField textFieldNome, textFieldIdade, textFieldTelefone, textFieldEmail;
     private JPasswordField passwordFieldSenha;
     private JButton buttoncadastro;
 
-    public void cadastro() {
+    public void cadastro(String usuario) {
         setTitle("Cadastro");
         setSize(300, 390);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -44,10 +44,10 @@ public class Cadastro extends JFrame {
         labelSexo.setBounds(50, 120, 100, 20);
         add(labelSexo);
 
-        String[] Sexo = {"Masculino", "Feminino",};
+        String[] Sexo = { "Masculino", "Feminino", };
         JComboBox<String> comboBox = new JComboBox<>(Sexo);
         comboBox.setBounds(150, 120, 100, 20);
-        
+
         getContentPane().add(comboBox);
 
         JLabel labelTelefone = new JLabel("Telefone:");
@@ -70,20 +70,20 @@ public class Cadastro extends JFrame {
         labelLivroFavorito1.setBounds(50, 210, 100, 20);
         add(labelLivroFavorito1);
 
-        String[] LivroFavorito1 = {"Romance", "Ficção","Tecnico"};
+        String[] LivroFavorito1 = { "Romance", "Ficção", "Tecnico" };
         JComboBox<String> livrofavorito1 = new JComboBox<>(LivroFavorito1);
         livrofavorito1.setBounds(150, 210, 100, 20);
-        
+
         getContentPane().add(livrofavorito1);
 
         JLabel labelLivroFavorito2 = new JLabel("Genero : ");
         labelLivroFavorito2.setBounds(50, 250, 100, 20);
         add(labelLivroFavorito2);
 
-        String[] LivroFavorito2 = {"Romance", "Ficção","Tecnico"};
+        String[] LivroFavorito2 = { "Romance", "Ficção", "Tecnico" };
         JComboBox<String> livroFavorito2 = new JComboBox<>(LivroFavorito2);
         livroFavorito2.setBounds(150, 250, 100, 20);
-        
+
         getContentPane().add(livroFavorito2);
 
         buttoncadastro = new JButton("Cadastro");
@@ -94,28 +94,40 @@ public class Cadastro extends JFrame {
         buttoncadastro.addActionListener(e -> {
             String Nome = textFieldNome.getText();
             String senha = new String(passwordFieldSenha.getPassword());
-            int idade = Integer.valueOf(textFieldIdade.getText());;
-            String sexo = (String)comboBox.getSelectedItem();
+            int idade = Integer.valueOf(textFieldIdade.getText());
+            ;
+            String sexo = (String) comboBox.getSelectedItem();
             int telefone = Integer.valueOf(textFieldTelefone.getText());
             String email = textFieldEmail.getText();
-            String favorito1 = (String)livrofavorito1.getSelectedItem();
-            String favorito2 = (String)livroFavorito2.getSelectedItem();
+            String favorito1 = (String) livrofavorito1.getSelectedItem();
+            String favorito2 = (String) livroFavorito2.getSelectedItem();
             String autoridade = "Usuario";
 
-            cadastroBD(Nome,senha,idade,sexo,telefone,email,favorito1,favorito2,autoridade);
-    });
+            cadastroBD(Nome, senha, idade, sexo, telefone, email, favorito1, favorito2, autoridade);
+        });
 
-    setVisible(true);
+        JButton Voltar = new JButton("Voltar");
+        Voltar.setBounds(5, 5, 70, 15);
+        Font buttonFont = Voltar.getFont();
+        Voltar.setFont(buttonFont.deriveFont(buttonFont.getSize() - 2f));
+        getContentPane().add(Voltar);
+
+        Voltar.addActionListener(e -> {
+            TelaPrincipal telaPrincipal = new TelaPrincipal();
+            telaPrincipal.Inicio(usuario);
+        });
+
+        setVisible(true);
     }
 
-    private  void cadastroBD(String Nome,String senha,int idade, String sexo,int telefone,String email, String favorito1, String favorito2, String autoridade) {
+    private void cadastroBD(String Nome, String senha, int idade, String sexo, int telefone, String email,
+            String favorito1, String favorito2, String autoridade) {
         try {
             ConexaoBd conexaoBd = new ConexaoBd();
             Connection conexao = conexaoBd.obterConexao();
 
             if (conexao != null) {
                 System.out.println("Conexão estabelecidacom sucesso!");
-                
 
                 String sql = "INSERT INTO tabela_cadastro (nome, senha, idade, sexo, telefone, email, livrosFavoritos1, livrosFavoritos2, autoridade) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -148,6 +160,7 @@ public class Cadastro extends JFrame {
 
         }
     }
+
     public void voltarAoLogin(JFrame TelaDeLogin) {
         setVisible(false);
         TelaDeLogin.setVisible(true);

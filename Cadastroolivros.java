@@ -1,4 +1,6 @@
 import javax.swing.*;
+
+import java.awt.Font;
 import java.sql.*;
 
 public class Cadastroolivros extends JFrame {
@@ -70,6 +72,16 @@ public class Cadastroolivros extends JFrame {
         
             
     });
+
+    JButton Voltar = new JButton("Voltar");
+        Voltar.setBounds(5, 5, 70, 15);
+        Font buttonFont = Voltar.getFont();
+        Voltar.setFont(buttonFont.deriveFont(buttonFont.getSize() - 2f));
+        getContentPane().add(Voltar);
+
+        Voltar.addActionListener(e -> {
+            RetornoTelaPrincipal(usuario);
+        });
 
 
         setVisible(true);

@@ -18,7 +18,7 @@ public class TelaPrincipal {
         frame.getContentPane().setLayout(new BorderLayout());
 
         barradeFerramentas(usuario, frame);
-        exibirlivros(frame);
+        exibirlivros(frame, usuario);
 
         frame.setVisible(true);
 
@@ -26,10 +26,10 @@ public class TelaPrincipal {
 
     // Chamar tela de cadastro de usuario
 
-    public void TelaDeCadastro(JFrame frame) {
+    public void TelaDeCadastro(JFrame frame, String usuario) {
         frame.setVisible(false);
         Cadastro telaCadastro = new Cadastro();
-        telaCadastro.cadastro();
+        telaCadastro.cadastro(usuario);
     }
 
     // Chamar tela de cadastro de livros
@@ -78,8 +78,6 @@ public class TelaPrincipal {
                 TelaDeCadastroLivros(usuario, frame);
             });
 
-            frame.getContentPane().add(CadastrarLivro);
-
             toolbar.add(CadastrarLivro);
 
             toolbar.addSeparator();
@@ -88,15 +86,28 @@ public class TelaPrincipal {
             toolbar.add(CadastroUsuario);
 
             CadastroUsuario.addActionListener(e -> {
-                TelaDeCadastro(frame);
+                TelaDeCadastro(frame, usuario);
             });
-            frame.getContentPane().add(CadastroUsuario);
 
             toolbar.add(CadastroUsuario);
 
-            toolbarPanel.add(toolbar);
+            JSeparator separator = new JSeparator(JSeparator.VERTICAL);
+            separator.setPreferredSize(new Dimension(0, 20)); 
+    
+            toolbar.add(separator);
 
-            toolbarPanel.add(toolbar, BorderLayout.PAGE_START);
+
+            JButton Sair = new JButton("Log off");
+            toolbar.add(Sair);
+
+            Sair.addActionListener(e -> {
+                frame.setVisible(false);
+                new TelaDeLogin();
+            });
+
+            toolbar.add(Sair, BorderLayout.PAGE_END);
+
+            toolbarPanel.add(toolbar);
 
             // Adiciona o painel ao JFrame
             frame.getContentPane().add(toolbarPanel, BorderLayout.PAGE_START);
@@ -118,11 +129,23 @@ public class TelaPrincipal {
 
             toolbar.add(CadastrarLivro);
 
-            toolbar.addSeparator();
+            JSeparator separator = new JSeparator(JSeparator.VERTICAL);
+            separator.setPreferredSize(new Dimension(0, 20)); 
+    
+            toolbar.add(separator);
 
-            toolbarPanel.add(toolbar, BorderLayout.PAGE_START);
+            JButton Sair = new JButton("Log off");
+            toolbar.add(Sair);
 
-            // Adiciona o painel ao JFrame
+            Sair.addActionListener(e -> {
+                frame.setVisible(false);
+                new TelaDeLogin();
+            });
+
+            toolbar.add(Sair, BorderLayout.PAGE_END);
+
+            toolbarPanel.add(toolbar);
+
             frame.getContentPane().add(toolbarPanel, BorderLayout.PAGE_START);
             frame.pack();
             frame.setVisible(true);
@@ -130,7 +153,7 @@ public class TelaPrincipal {
         }
     }
 
-    public void exibirlivros(JFrame frame) {
+    public void exibirlivros(JFrame frame, String usuario) {
 
         JPanel panel = new JPanel(new FlowLayout());
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -143,7 +166,7 @@ public class TelaPrincipal {
 
         try {
 
-            String sql = "SELECT Titulo FROM Nota_livros ORDER BY SomaNotas DESC";
+            String sql = "SELECT Titulo, SomaNotas, Qtd_leitores FROM Nota_livros ORDER BY (SomaNotas/Qtd_leitores) DESC";
             PreparedStatement statement = conexao.prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
 
@@ -153,7 +176,8 @@ public class TelaPrincipal {
 
             while (resultSet.next()) {
                 String titulo = resultSet.getString("Titulo");
-                //int nota = resultSet.getInt("nota");
+                int nota = resultSet.getInt("SomaNotas");
+                int qtd_leitores = resultSet.getInt("Qtd_leitores");
 
                 JPanel buttonPanel = new JPanel();
                 buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -163,17 +187,25 @@ public class TelaPrincipal {
                 button.setPreferredSize(buttonSize);
 
                 button.addActionListener(e -> {
-                        try {
-                            ExibirLivroDetalhado(titulo);
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
-                        }
+                    try {
+                        ExibirLivroDetalhado(titulo, usuario, frame);
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
                 });
+                if (nota == 0) {
+                    JLabel labelNota = new JLabel("Nota: " + 0.0);
 
-                //JLabel labelNota = new JLabel("Nota: " + nota);
+                    buttonPanel.add(button);
+                    buttonPanel.add(labelNota);
 
-                buttonPanel.add(button);
-                //buttonPanel.add(labelNota);
+                } else {
+                    float notaFloat = (float) nota;
+                    JLabel labelNota = new JLabel("Nota: " + notaFloat / qtd_leitores);
+
+                    buttonPanel.add(button);
+                    buttonPanel.add(labelNota);
+                }
 
                 panel.add(buttonPanel);
                 panel.add(Box.createVerticalStrut(5));
@@ -184,8 +216,8 @@ public class TelaPrincipal {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        JScrollPane scrollPane = new JScrollPane(panel); 
-        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS); 
+        JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         frame.add(scrollPane);
 
@@ -195,8 +227,8 @@ public class TelaPrincipal {
 
     }
 
-    public void ExibirLivroDetalhado(String titulo) throws SQLException {
+    public void ExibirLivroDetalhado(String titulo, String usuario, JFrame frame) throws SQLException {
         DetalhamentoLivros detalhamentoLivros = new DetalhamentoLivros();
-        detalhamentoLivros.TelaDoLivroDetalhado(titulo);
+        detalhamentoLivros.TelaDoLivroDetalhado(titulo, usuario, frame);
     }
 }
